@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html>
+  <br/>
+<head>
+  <link rel="stylesheet" type="text/css" href="style.css">
+  <title>The Vending Machine!</title>
+</head>
+<body>
+
+  <h1>The Virtual Vending Machine</h1>
+
+  <table id="vendingTable"  style="width:40%">
+    <thead>
+      <tr>
+        <th>Product Number</th>
+        <th>Product Name</th>
+        <th>Price</th>
+        <th>Qty Available</th>
+      </tr>
+    </thead>
+    <tbody></tbody>
+  </table>
+
+  <br/>
+  <br/>
+
+  <form id="vendingForm">
+    <label for="moneyIn">Vending Machine Balance $</label>
+    <input type="number" min="1" step="0.05" id="moneyIn" name="moneyIn" onfocus="this.oldValue = this.value;" onchange="changeToMoneyInByCustomer(this);" title="Put money in here (the balance will automatically reduce as you spend)">
+    <br><br>
+
+    <label for="productIdToBuy">Enter the Product Number of the item you want to purchase</label>
+    <input type="number" id="productIdToBuy" step="1" name="productIdToBuy" title="Put product number in here" onkeyup="showProductNameSelected(this.value)">
+    <span id="productNameToBuy"></span>
+    
+    <br><br>
+
+    <button type="button" onclick="submitPurchase()">Buy Product</button>
+    <button type="button" onclick="returnMoney()">Return Money</button>
+  </form>
+
+  <p id="purchaseMessage"></p>
+
+  <br/>
+
+  <form id="summaryForm">
+    <h4 id="purchaseListHeading"></h4>
+    <ul id="purchaseList">
+    </ul>
+  </form>
+
+  <script src="index.js"></script>
+
+
+</body>
+</html>

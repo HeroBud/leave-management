@@ -1,0 +1,27 @@
+
+body {
+    background-color: hsl(38, 65%, 91%);
+  }
+  
+  h1 {
+    color: #180218;
+  }
+
+  table, th, td {
+    border: 3px solid purple;
+    border-collapse: collapse;
+    text-align: center; 
+  }
+
+  #summaryForm {
+    opacity: 1;
+    transition: opacity 1s linear;
+  }
+  
+  #summaryForm.fade-out {
+    opacity: 0;
+    transition: opacity 12s linear;
+  }
+
+
+ 
