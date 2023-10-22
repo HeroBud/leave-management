@@ -74,7 +74,7 @@ function changeToMoneyInByCustomer(textBoxMoneyIn)
 
   moneyIn.value = (Number(textBoxMoneyIn.value)).toFixed(2); 
 
-  if (textBoxMoneyIn.value != "" && textBoxMoneyIn.value > 0)
+  if (textBoxMoneyIn.value != "" && Number(textBoxMoneyIn.value) > 0)
   {
     setSaleInProgress(true);
   }
@@ -82,7 +82,6 @@ function changeToMoneyInByCustomer(textBoxMoneyIn)
 
 function showProductNameSelected(value)
 {
-  updatePurchaseMessage("");
   productNameToBuy.innerHTML = "";
 
   if (value.trim() == "")
@@ -90,11 +89,12 @@ function showProductNameSelected(value)
     return;
   }
 
-  products.forEach(item => 
+   products.forEach(item => 
     {
         if (item.id == value.trim())
         {
           productNameToBuy.innerHTML = item.name;
+          updatePurchaseMessage("");
           return;
         }
   
@@ -148,17 +148,20 @@ function submitPurchase()
     {
       updatePurchaseMessage("Please put some money in.", 'blue');
       clearPurchaseHistoryAfterAWhile();
+      moneyInGiveFocus();
       return;
     }
     else if (moneyIn.value < cheapestProductPriceOfInStockItems && productIdToBuy.value == "")
     {
       updatePurchaseMessage("Please put some more money in. You have not added enough funds to purchase an in stock item.", 'blue');
+      moneyInGiveFocus();
       return;
     }
 
     if (productIdToBuy.value == "")
     {
       updatePurchaseMessage("Please select a product.", 'blue');
+      productIdToBuy.focus();
       return;
     }
 
@@ -167,6 +170,7 @@ function submitPurchase()
       if (products[i]['qtyAvail'] <= 0 )
       {
         updatePurchaseMessage("Sorry - we've sold out of " + products[i]['name'] + "s.", 'red');
+        productIdToBuy.focus();
         return;
       }
        var thisProductsPrice = products[i]['price'];
@@ -174,6 +178,7 @@ function submitPurchase()
        if (thisProductsPrice > moneyIn.value)
        {
           updatePurchaseMessage("Not enough funds.", 'red');
+          moneyInGiveFocus();
           return;
        }
 
@@ -181,26 +186,40 @@ function submitPurchase()
        updateListOfPurchasesByThisCustomer(products[i]['name'])
        updateVendingTable();
 
+       var giveFocusToMoneyIn = false;
+
        if (thisProductsPrice == moneyIn.value )    
        {
           updatePurchaseMessage("Thank you - exact money received.  Enjoy your snack" + (productListPurchasedByThisCustomer.length > 1 ? "s" : "") + "!", 'green');
           clearPurchaseHistoryAfterAWhile();
           clearProductToBuyDisplays();
+          giveFocusToMoneyIn = true;
        }
        else if (thisProductsPrice < moneyIn.value  && moneyIn.value - thisProductsPrice >= cheapestProductPriceOfInStockItems )  //sufficient funds to purchase another in stock product
        {
-        updatePurchaseMessage("Thank you! You have enough funds to purchase another stocked product.", 'green');
+          updatePurchaseMessage("Thank you! You have enough funds to purchase another stocked product.", 'green');
+          clearProductToBuyDisplays();
+          productIdToBuy.focus();
        }
        else if (thisProductsPrice < moneyIn.value  && moneyIn.value - thisProductsPrice < cheapestProductPriceOfInStockItems )   //insufficient funds to purchase another in stock product
        {
-        updatePurchaseMessage("Thank you! Please add more funds to buy another stocked product, or use the Return Money button to get your change.", 'green');   
+          updatePurchaseMessage("Thank you! Please add more funds to buy another stocked product, or use the Return Money button to get your change.", 'green');
+          clearProductToBuyDisplays(); 
+          giveFocusToMoneyIn = true;
        }
 
        moneyIn.value = (moneyIn.value - thisProductsPrice).toFixed(2);
+
+       if (giveFocusToMoneyIn)
+       {
+          moneyInGiveFocus();
+       }
+       
        return;
     }
 
     updatePurchaseMessage("Product could not be found.", 'red');
+    productIdToBuy.focus();
   }
 
 }
@@ -210,12 +229,13 @@ function returnMoney()
   if (moneyIn.value > 0)
   {
     updatePurchaseMessage("Here's your funds of $" + moneyIn.value + ". Enjoy the rest of your day!", 'green');
-
     moneyIn.value = 0;
+    moneyInGiveFocus(); 
   }
   else
   {
     updatePurchaseMessage("No money to return.", 'blue');
+    moneyInGiveFocus(); 
   }
 
   clearPurchaseHistoryAfterAWhile();
@@ -242,6 +262,12 @@ function clearProductToBuyDisplays()
 {
   productIdToBuy.value = "";
   productNameToBuy.innerHTML = "";
+}
+
+function moneyInGiveFocus()
+{ 
+  moneyIn.select();
+  moneyIn.focus(); 
 }
 
 function updatePurchaseMessage(msg, colour)
@@ -317,5 +343,6 @@ function getRandomWelcomeMessage()
 //initial setup
 updatePurchaseMessage(getRandomWelcomeMessage(), 'purple');
 updateVendingTable();
+moneyIn.focus(); 
 
 
