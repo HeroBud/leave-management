@@ -3,52 +3,76 @@
   <br/>
 <head>
   <link rel="stylesheet" type="text/css" href="style.css">
-  <title>The Vending Machine!</title>
+  <title>Home - Leave Management</title>
 </head>
 <body>
 
-  <h1>The Virtual Vending Machine</h1>
+  <h1>Leave Management System</h1>
 
-  <table id="vendingTable"  style="width:40%">
-    <thead>
-      <tr>
-        <th>Product Number</th>
-        <th>Product Name</th>
-        <th>Price</th>
-        <th>Qty Available</th>
-      </tr>
-    </thead>
-    <tbody></tbody>
-  </table>
+  <button onclick="window.location.href='leave-request.html';" title='Add a new leave request for an employee'>New Leave Request</button>
+  <br/><br/>
+
+  <div style="display:flex">
+    <span style="margin-top: 4px; margin-left: 4px">Search Filter&nbsp;</span>
+    <input id="filterInput" type="text" placeholder="word/phrase..." onkeyup="handleFilterInput()">
+    <span style="margin-top: 4px; margin-left: 4px">in</span>
+    <select id="filterByDropdown" style="margin-left: 4px;" onchange="changeFilterFieldDropDown()">
+      <option value="EmployeeName">Employee Name</option>
+      <option value="StartOfLeave">Start of Leave</option>
+      <option value="EndOfLeave">End of Leave</option>
+      <option value="LeaveType">Leave Type</option>
+      <option value="LeaveReason">Reason</option>
+      <option value="LeaveStatus">Status</option>
+    </select>
+
+    <span>&emsp;</span>
+
+    <label for="filterStartDate" style="margin-top: 4px; margin-left: 4px">Start&nbsp;</label>
+    <input type="date" id="filterStartDate" name="filterStartDate" title='Filters out any requests with a start date earlier than this date' onchange="changeFilterStartDateTime()">
+    <input type="time" id="filterStartTime" name="filterStartTime" onchange="changeFilterStartDateTime()">
+
+    <label for="filterEndDate" style="margin-top: 4px; margin-left: 4px">to End&nbsp;</label>
+    <input type="date" id="filterEndDate" name="filterEndDate" title='Filters out any requests with an end date later than this date' onchange="changeFilterEndDateTime()">
+    <input type="time" id="filterEndTime" name="filterEndTime" onchange="changeFilterEndDateTime()">
+
+    <span>&emsp;</span>
+
+    <label for="maxRecordsToRetrieve" style="margin-top: 4px; margin-left: 4px">Max Records&nbsp;</label>
+    <input type='number' id='maxRecordsToRetrieve' name='maxRecordsToRetrieve'  min='10' step='10' style='width:55px'  value='20' onchange="changeMaxRecords()" onkeyup="changeMaxRecords()" 
+        title='Maximum records to retrieve'>
+  </div> 
 
   <br/>
   <br/>
 
-  <form id="vendingForm">
-    <label for="moneyIn">Vending Machine Balance $</label>
-    <input type="number" min="1" step="0.05" id="moneyIn" name="moneyIn" onfocus="this.oldValue = this.value;" onchange="changeToMoneyInByCustomer(this);" title="Put money in here (the balance will automatically reduce as you spend)">
-    <br><br>
-
-    <label for="productIdToBuy">Enter the Product Number of the item you want to purchase</label>
-    <input type="number" id="productIdToBuy" step="1" name="productIdToBuy" title="Put product number in here" onkeyup="showProductNameSelected(this.value)">
-    <span id="productNameToBuy"></span>
-    
-    <br><br>
-
-    <button type="button" onclick="submitPurchase()">Buy Product</button>
-    <button type="button" onclick="returnMoney()">Return Money</button>
-  </form>
-
-  <p id="purchaseMessage"></p>
+  <div class='vertical-scroll-class' style='width:80%'>  
+    <table id="leaveRequestsTable"  style="width:100%">
+      <thead title="Click the Column Name to sort by that column (toggles asc/desc)">
+        <tr>
+          <th onclick="sortTable(0, 'number')">Request #</th>
+          <th onclick="sortTable(1, 'string')">Employee Name</th>
+          <th onclick="sortTable(2, 'datetime')">Start of Leave</th>
+          <th onclick="sortTable(3, 'datetime')">End of Leave</th>
+          <th onclick="sortTable(4, 'number')">Days</th>
+          <th onclick="sortTable(5, 'string')">Leave Type</th>
+          <th onclick="sortTable(6, 'string')">Reason</th>
+          <th onclick="sortTable(7, 'string')">Status</th>
+          <th style="cursor: default;" title="">Action</th>
+        </tr>
+      </thead>
+      <tbody></tbody>
+    </table>
+  </div>
 
   <br/>
+  <p id="leaveListWarningMessage"></p>
+  <br/>
 
-  <form id="summaryForm">
-    <h4 id="purchaseListHeading"></h4>
-    <ul id="purchaseList">
-    </ul>
-  </form>
+  
 
+
+  <script src="data.js"></script>
+  <script src="utils.js"></script>
   <script src="index.js"></script>
 
 

@@ -1,27 +1,57 @@
 
-body {
-    background-color: hsl(38, 65%, 91%);
+  * { font-family: Arial; } 
+
+  body {
+    background-color: hsl(38, 62%, 95%);
+    padding: 10px 50px 50px 50px;
   }
   
   h1 {
     color: #180218;
   }
 
-  table, th, td {
-    border: 3px solid purple;
+  table, th, td  {
+    border: 1.5px solid rgb(57, 25, 133);
     border-collapse: collapse;
     text-align: center; 
   }
 
-  #summaryForm {
-    opacity: 1;
-    transition: opacity 1s linear;
+  thead th {
+    background-color: rgb(219, 219, 208);
   }
-  
-  #summaryForm.fade-out {
-    opacity: 0;
-    transition: opacity 12s linear;
+
+  td {
+    padding-left: 5px;
+    padding-right: 5px;
   }
 
 
+  tr:nth-child(even) {
+    background-color: hsl(39, 64%, 91%);
+  }
+  tr:nth-child(odd) {
+    background-color: hsl(40, 56%, 95%);
+  }
+
+  thead th:hover {
+    background-color: rgba(223, 224, 190, 0.564);
+    cursor: pointer;
+  }
+
+  button {
+    cursor: pointer;
+  }
+
+  .vertical-scroll-class {
+    height: 507px;
+    overflow: auto;
+  }
+
+  .span-info-class {
+    color: blue;
+  }
  
+ .column-wide-class {
+    max-width: 250px; 
+    word-wrap: break-word; 
+ }

@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html>
+  <br/>
+<head>
+  <link rel="stylesheet" type="text/css" href="style.css">
+  <title id="leaveRequestTitle">Leave Request - Leave Management</title>
+</head>
+<body>
+
+  <h1 id="leaveRequestHeading">Leave Request</h1>
+
+  <br/>
+  <br/>
+
+  <form id="newRequestForm">
+    <label for="employeeName">Employee</label>
+    <select id="employeeName"  name="employeeName">
+      <option></option> 
+    </select>
+    <br><br>
+
+    <label for="startDate">Start</label>
+    <input type="date" id="startDate" name="startDate" onchange="updateLeaveDaysDisplay()">
+    <input type="time" id="startTime" name="startTime" value="00:00" onchange="updateLeaveDaysDisplay()">
+    <br><br>
+
+    <label for="endDate">End&nbsp;</label>
+    <input type="date" id="endDate" name="endDate" onchange="updateLeaveDaysDisplay()">
+    <input type="time" id="endTime" name="endTime" value="00:00" onchange="updateLeaveDaysDisplay()">
+
+    <span id="leaveDays" class="span-info-class"></span>
+    <br><br>
+
+    <label for="leaveType">Leave Type</label>
+    <select id="leaveType"  name="leaveType">
+      <option></option>
+    </select>
+    <br><br>
+    
+    <label for="leaveReason">Reason</label>
+    <input type="text" style="width: 300px;" maxlength="50" id="leaveReason" max="3" name="leaveReason" >
+    <br><br>
+
+    <label id="leaveStatusLabel" for="leaveStatus">Status</label>
+    <select id="leaveStatus"  name="leaveStatus">
+      <option></option>
+    </select>
+    <br><br>
+
+    <button type="button" id="submitLeaveRequestBtn" onclick="submitRequest()">Submit</button>
+   
+  </form>
+
+  <p id="leaveRequestWarningMessage"></p>
+
+  <br/>
+
+  <a href="index.html">Cancel and Return Home</a>
+
+
+  <script src="data.js"></script>
+  <script src="utils.js"></script>
+  <script src="leave-request.js"></script>
+
+
+</body>
+</html>
