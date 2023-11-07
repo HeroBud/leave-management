@@ -10,11 +10,11 @@
     color: #180218;
   }
 
-  table, th, td  {
+  table, th, td {
     border: 1.5px solid rgb(57, 25, 133);
     border-collapse: collapse;
-    text-align: center; 
-  }
+    text-align: center;
+  } 
 
   thead th {
     background-color: rgb(219, 219, 208);
@@ -52,6 +52,6 @@
   }
  
  .column-wide-class {
-    max-width: 250px; 
+    max-width: 300px; 
     word-wrap: break-word; 
  }

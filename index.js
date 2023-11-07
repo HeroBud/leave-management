@@ -55,6 +55,12 @@ function refreshLeaveRequestsTable(filterBy, filterValue)
       {
         switch (filterBy) 
         {
+          case "RequestIdNbr":
+            if (!item.id.toString().includes(filterValue.trim().toUpperCase()))
+            {
+              continue;
+            }
+            break;
           case "EmployeeName":
             if (!item.employee_name.toUpperCase().includes(filterValue.trim().toUpperCase()))
             {
@@ -108,9 +114,6 @@ function refreshLeaveRequestsTable(filterBy, filterValue)
       const typeCell = document.createElement('td');
       const reasonCell = document.createElement('td');
       reasonCell.classList.add('column-wide-class');
-
-      //reasonCell.style.width = '100px';
-      //reasonCell.style.word-wrap = 'break-word';
       const statusCell = document.createElement('td');
 
       requestIdCell.textContent = item.id;
@@ -122,7 +125,8 @@ function refreshLeaveRequestsTable(filterBy, filterValue)
       reasonCell.textContent = item.reason;  
       statusCell.textContent = item.status;
 
-      row.appendChild(requestIdCell);
+      requestIdCell.setAttribute("name", "requestID"); 
+      row.appendChild(requestIdCell);     
       row.appendChild(employeeNameCell);
       row.appendChild(startDateCell);
       row.appendChild(endDateCell);
@@ -135,7 +139,7 @@ function refreshLeaveRequestsTable(filterBy, filterValue)
       viewDetailsBtn.innerText="Edit";
       viewDetailsBtn.onclick = function () 
       {
-        window.location.href = "leave-request.html?id=" + item.id;
+        window.location.href = "leave-request.html?id=" + leaveRequestsTable.rows[this.parentNode.rowIndex].cells["requestID"].innerHTML;
       };
       document.body.appendChild(viewDetailsBtn);
       row.appendChild(viewDetailsBtn)
@@ -153,23 +157,23 @@ function refreshLeaveRequestsTable(filterBy, filterValue)
     }
     else
     {
-      updateLeaveListWarningMessage("No matches found.","blue");
+      updateLeaveListWarningMessage("No matches found","blue");
     }
 
   }
   else if (rowCount == 1)
   {
-    updateLeaveListWarningMessage("1 record found.","blue");
+    updateLeaveListWarningMessage("1 record found","blue");
   }
   else 
   {
     if (rowCount < maxRecordsToRetrieve.value)  // we found all possible matches
     {
-      updateLeaveListWarningMessage(rowCount + " records found.","blue");
+      updateLeaveListWarningMessage(rowCount + " records found","blue");
     }
     else
     {
-      updateLeaveListWarningMessage("NOTE: Use the filtering to refine your search, or increase the maximum records that can be retrieved to view more than " + rowCount + " records.","blue");
+      updateLeaveListWarningMessage("Use the filtering to refine your search, or increase the maximum records that can be retrieved to view more than " + rowCount + " records.","blue");
     }
   }
 }
@@ -403,6 +407,12 @@ function randomGenerateRequestRecords(qty)
 
   let localStorageLeaveRequests = JSON.parse(localStorage.getItem("leaveRequestsDataSet"));
 
+  if (qty > 10000 || localStorageLeaveRequests.length > 15000)  //local storage has quota limits - 25000 is enough for prototyping
+  {
+    console.log('Local Storage contains ' + localStorageLeaveRequests.length + ' records - no more will be added for prototype.')
+    return; 
+  }
+
   //Get Current Max Id - this is not ideal - in a real situation data would be in db with primary key indexing for speedy retrieval and to prevent duplicates
   var currentMaxId = 0;
   if (localStorageLeaveRequests != null)
@@ -425,7 +435,7 @@ function randomGenerateRequestRecords(qty)
     const randomLeaveTypeNbr = Math.floor(Math.random() * dataLeaveType.length);
     const randomLeaveStatusNbr = Math.floor(Math.random() * dataLeaveStatus.length);
 
-    const dataSetReason = ["Annual Leave", "Reason abc", "A reason xyx", "No reason given"];
+    const dataSetReason = ["Annual Leave", "Reason abc", "A reason xyz", "No reason given", "Unknown"];
     const randomReasonNbr = Math.floor(Math.random() * dataSetReason.length);
 
     //NOTE: seeing as this is for 'load testing' don't worry about overlapping dates with other records
@@ -435,8 +445,8 @@ function randomGenerateRequestRecords(qty)
     const randomEndDateNbr = Math.floor(Math.random() * dataSetEndDate.length);
 
     const newRequest = {
-       id: newId,
-       employee_name: dataEmployee[randomEmpNbr],
+      id: newId,
+      employee_name: dataEmployee[randomEmpNbr],
       start_date: dataSetStartDate[randomStartDateNbr],
       end_date: dataSetEndDate[randomEndDateNbr],
       type: dataLeaveType[randomLeaveTypeNbr],
@@ -451,7 +461,7 @@ function randomGenerateRequestRecords(qty)
 
 }
 
-//clear to refresh to initial data   -- UNCOMMENT THIS TO RESET DATA
+//clear to refresh to initial data   -- UNCOMMENT THIS TO RESET DATA  - but remember to comment it back out after - so that add/edits are refreshed to Leave List!
 //localStorage.clear();
 
 //initial setup

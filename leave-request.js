@@ -158,7 +158,14 @@ function IsRequestDataValid()
   }
   else if (getDateTime(startDate.value, startTime.value) == null)
   {
-    updateLeaveRequestWarningMessage('The start date is not valid.', 'red');
+    if (startDate.value == "")
+    {
+      updateLeaveRequestWarningMessage('A start date is required.', 'red');
+    }
+    else
+    {
+      updateLeaveRequestWarningMessage('The start date/time is not valid.', 'red');
+    }
     return false;
   }
   else if (getDateTime(startDate.value, startTime.value) <= new Date())
@@ -168,7 +175,14 @@ function IsRequestDataValid()
   }
   else if (getDateTime(endDate.value, endTime.value) == null)
   {
-    updateLeaveRequestWarningMessage('The end date is not valid.', 'red');
+    if (endDate.value == "")
+    {
+      updateLeaveRequestWarningMessage('An end date is required.', 'red');
+    }
+    else
+    {
+      updateLeaveRequestWarningMessage('The end date/time is not valid.', 'red');
+    }
     return false;
   }
   else if (getDateTime(endDate.value, endTime.value) <=  getDateTime(startDate.value, startTime.value))
@@ -178,12 +192,20 @@ function IsRequestDataValid()
   }
   else if (leaveDays.innerHTML == null || leaveDays.innerHTML == "" || leaveDays.innerHTML == "0")  //rarely will get here, with all the earlier checks, but can eg: the enddate is only a minute later than the startdate and with rounding it comes to 0
   {
-    updateLeaveRequestWarningMessage('The leave period cannot be determined. Check the date/time range.', 'red');
+    var diffInMilliseconds = getDateTime(endDate.value, endTime.value) - getDateTime(startDate.value, startTime.value);
+    if ( diffInMilliseconds < 900000 )  //15 minutes is 900000 milliseconds
+    {
+      updateLeaveRequestWarningMessage('The leave period must be at least 15 minutes.', 'red');
+    }
+    else
+    {
+      updateLeaveRequestWarningMessage('The leave period cannot be determined. Check the date/time range.', 'red');
+    }
     return false;
   }
-  else if (dateRangeOverlapsWithAnotherLeaveRequest())
+  else if (dateRangeOverlapsWithAnotherLeaveRequest(true))
   {
-    updateLeaveRequestWarningMessage('The leave period overlaps with an existing leave request for this employee.', 'red');
+    //updateLeaveRequestWarningMessage('The leave period overlaps with an existing leave request for this employee.', 'red');  -- done in dateRangeOverlapsWithAnotherLeaveRequest so can show clashing dates
     return false;
   }
   else if (leaveType.value == null || leaveType.value.length == 0)
@@ -206,7 +228,7 @@ function IsRequestDataValid()
   return true;
 }
 
-function dateRangeOverlapsWithAnotherLeaveRequest()
+function dateRangeOverlapsWithAnotherLeaveRequest(showMessage)
 {
   let localStorageLeaveRequests = JSON.parse(localStorage.getItem("leaveRequestsDataSet"));
 
@@ -263,10 +285,15 @@ function dateRangeOverlapsWithAnotherLeaveRequest()
           else  //everything else is an overlap?
           {
             haveOverlap = true;
+            if (showMessage)
+            {
+              updateLeaveRequestWarningMessage('This leave overlaps with an existing leave request for ' + employeeName.value + ' (Request #' + localStorageLeaveRequests[i].id + ', ' +
+                 formatDateTimeAsDDMMYYYYHHMM(localStorageLeaveRequests[i].start_date) + " to " + formatDateTimeAsDDMMYYYYHHMM(localStorageLeaveRequests[i].end_date) + ")." , 'red');
+            }
             break;
           } 
 
-/*  refactioring - based on checking the oks shouldn't need to specifically check for the overlaps
+/*  refactioring - based on checking the oks -so shouldn't need following code that specifically checks for the overlaps
           else if (theNewOrEditedStartDate <= thisItemStartDate  && theNewOrEditedEndDate >= thisItemStartDate) 
           {
             haveOverlap = true;
@@ -290,6 +317,8 @@ function dateRangeOverlapsWithAnotherLeaveRequest()
     */      
       }        
   };
+
+ 
 
   return haveOverlap;
 }
